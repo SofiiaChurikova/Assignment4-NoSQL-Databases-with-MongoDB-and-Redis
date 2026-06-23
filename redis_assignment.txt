@@ -79,11 +79,11 @@ TTL cache:product:1001
 
 // BONUS. LEADERBOARD (Sorted Set)
 
-# add 6 products with their sales count as the score
+// add 6 products with their sales count as the score
 ZADD sales_leaderboard 150 "Wireless Mouse" 320 "Mechanical Keyboard" 90 "USB-C Cable" 540 "Gaming Laptop" 210 "Smart Watch" 75 "Webcam"
 
-# display the full ranking from highest to lowest
+// display the full ranking from highest to lowest
 ZREVRANGE sales_leaderboard 0 -1 WITHSCORES
 
-# display only the top-selling product (the first place)
+// display only the top-selling product (the first place)
 ZREVRANGE sales_leaderboard 0 0 WITHSCORES
