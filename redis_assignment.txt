@@ -1,0 +1,89 @@
+// Task 1. String Operations
+
+SET product:1:name "Wireless Mouse"
+SET product:1:price "25.99"
+SET product:1:category "Electronics"
+
+GET product:1:name
+GET product:1:price
+GET product:1:category
+
+MGET product:1:name product:1:price product:1:category
+
+// Task 2. Hash Operations
+HSET product:2 name "Mechanical Keyboard" price "79.99" category "Electronics" stock "150"
+
+// retrieve all fields and values
+HGETALL product:2
+
+// retrieve a single field
+HGET product:2 price
+
+// list only the field names
+HKEYS product:2
+
+// Task 3. List Operations
+RPUSH recent_orders 1001 1002 1003 1004 1005 1006 1007 1008 1009 1010
+
+// display all orders
+LRANGE recent_orders 0 -1
+
+// display the latest 3 orders
+LRANGE recent_orders -3 -1
+
+// how many orders are in the list
+LLEN recent_orders
+
+// Task 4. Set Operations
+SADD product_tags "new" "sale" "popular" "electronics" "wireless" "gaming" "bestseller" "limited"
+
+// try to add a duplicate -> returns 0 - nothing was added
+SADD product_tags "new"
+
+// view all tags
+SMEMBERS product_tags
+
+// number of unique tags (still 8, the duplicate did not increase it)
+SCARD product_tags
+
+SISMEMBER product_tags "gaming"
+SISMEMBER product_tags "outdated"
+
+// Task 5. Expiration (TTL)
+SET featured_product "Smart Watch"
+
+// expire in 60 seconds
+EXPIRE featured_product 60
+
+// TTL returns -2 once the key has expired
+TTL featured_product
+
+// GET now returns (nil) because the key expired automatically.
+GET featured_product
+
+// Task 6. Cache Simulation
+SET cache:product:1001 "{\"name\":\"Gaming Laptop\",\"price\":1299.99,\"category\":\"Electronics\",\"stock\":12}" EX 120
+
+GET cache:product:1001
+
+// verify the expiration time (should count down from 120)
+TTL cache:product:1001
+
+// Why caching improves performance:
+// Redis keeps data in RAM, so reading it is very fast.
+// Getting the same product from the main database is much slower.
+// We save the product in Redis for 120 seconds, so during that time
+// every request is answered straight from Redis instead of the database.
+// This makes the app faster and the main database does less work.
+
+
+// BONUS. LEADERBOARD (Sorted Set)
+
+# add 6 products with their sales count as the score
+ZADD sales_leaderboard 150 "Wireless Mouse" 320 "Mechanical Keyboard" 90 "USB-C Cable" 540 "Gaming Laptop" 210 "Smart Watch" 75 "Webcam"
+
+# display the full ranking from highest to lowest
+ZREVRANGE sales_leaderboard 0 -1 WITHSCORES
+
+# display only the top-selling product (the first place)
+ZREVRANGE sales_leaderboard 0 0 WITHSCORES
